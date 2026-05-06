@@ -1,0 +1,67 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Users</h1>
+      <p class="page-subtitle">Manage all registered users</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="padding: 0;">
+      @if (loading()) {
+        <div class="loading-state">
+          <span class="spinner"></span>
+          <span>Loading users...</span>
+        </div>
+      } @else if (error()) {
+        <div class="alert alert-danger" style="margin: 16px;">{{ error() }}</div>
+      } @else if (users().length === 0) {
+        <div class="empty-state">
+          <div class="empty-state-icon">👥</div>
+          <div class="empty-state-title">No users found</div>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                <tr>
+                  <td class="text-muted">{{ user.id }}</td>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar">{{ user.fullName.charAt(0) }}</div>
+                      <span class="user-name">{{ user.fullName }}</span>
+                    </div>
+                  </td>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <span class="badge" [class]="user.role === 'ADMIN' ? 'badge-urgent' : 'badge-open'">
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td class="text-muted text-sm">{{ formatDate(user.createdAt || '') }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          {{ users().length }} users total
+        </div>
+      }
+    </div>
+  </div>
+</div>

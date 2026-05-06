@@ -1,0 +1,93 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">My Tickets</h1>
+      <p class="page-subtitle">Track and manage your support requests</p>
+    </div>
+    <a routerLink="/student/tickets/new" class="btn btn-primary">+ New Ticket</a>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    @for (status of ['ALL', 'OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']; track status) {
+      <button
+        class="filter-tab"
+        [class.active]="filterStatus() === status"
+        (click)="setFilter(status)"
+      >
+        {{ status === 'IN_PROGRESS' ? 'In Progress' : (status | titlecase) }}
+        @if (status === 'ALL') {
+          <span class="tab-count">{{ tickets().length }}</span>
+        } @else {
+          <span class="tab-count">{{ tickets() | ticketFilter: status }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="padding: 0;">
+      @if (loading()) {
+        <div class="loading-state">
+          <span class="spinner"></span>
+          <span>Loading tickets...</span>
+        </div>
+      } @else if (error()) {
+        <div class="alert alert-danger" style="margin: 16px;">{{ error() }}</div>
+      } @else if (filteredTickets().length === 0) {
+        <div class="empty-state">
+          <div class="empty-state-icon">🎫</div>
+          <div class="empty-state-title">No tickets found</div>
+          <div class="empty-state-text">
+            @if (filterStatus() === 'ALL') {
+              You haven't submitted any tickets yet.
+            } @else {
+              No tickets with status "{{ filterStatus() }}".
+            }
+          </div>
+          @if (filterStatus() === 'ALL') {
+            <a routerLink="/student/tickets/new" class="btn btn-primary mt-4">Create Your First Ticket</a>
+          }
+        </div>
+      } @else {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Comments</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ticket of filteredTickets(); track ticket.id) {
+                <tr>
+                  <td class="text-muted">#{{ ticket.id }}</td>
+                  <td>
+                    <div class="ticket-title">{{ ticket.title }}</div>
+                    <div class="ticket-desc text-muted text-sm">{{ ticket.description | slice:0:60 }}...</div>
+                  </td>
+                  <td>{{ ticket.category?.name || '—' }}</td>
+                  <td><span [class]="getPriorityClass(ticket.priority)">{{ ticket.priority }}</span></td>
+                  <td><span [class]="getStatusClass(ticket.status)">{{ ticket.status | titlecase }}</span></td>
+                  <td class="text-center">{{ ticket.commentCount }}</td>
+                  <td class="text-muted text-sm">{{ formatDate(ticket.createdAt) }}</td>
+                  <td>
+                    <a [routerLink]="['/student/tickets', ticket.id]" class="btn btn-secondary btn-sm">View</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

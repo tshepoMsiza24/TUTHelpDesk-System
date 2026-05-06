@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Submit New Ticket</h1>
+      <p class="page-subtitle">Describe your issue and we'll help you resolve it</p>
+    </div>
+    <a routerLink="/student/tickets" class="btn btn-secondary">← Back to Tickets</a>
+  </div>
+
+  <div class="form-card">
+    @if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="form-label" for="title">Ticket Title *</label>
+        <input
+          id="title"
+          type="text"
+          class="form-control"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="Brief summary of your issue"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category" class="form-control" [(ngModel)]="categoryId" name="category">
+            <option [ngValue]="null">Select a category</option>
+            @for (cat of categories(); track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="priority">Priority</label>
+          <select id="priority" class="form-control" [(ngModel)]="priority" name="priority">
+            @for (p of priorities; track p) {
+              <option [value]="p">{{ p }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="description">Description *</label>
+        <textarea
+          id="description"
+          class="form-control"
+          [(ngModel)]="description"
+          name="description"
+          placeholder="Please provide a detailed description of your issue..."
+          rows="6"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/student/tickets" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span> Submitting...
+          } @else {
+            Submit Ticket
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

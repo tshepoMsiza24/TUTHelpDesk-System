@@ -1,0 +1,138 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  @if (loading()) {
+    <div class="loading-state">
+      <span class="spinner"></span>
+      <span>Loading ticket...</span>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (ticket()) {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a [routerLink]="getBackLink()">Tickets</a>
+          <span>/</span>
+          <span>#{{ ticket()!.id }}</span>
+        </div>
+        <h1 class="page-title">{{ ticket()!.title }}</h1>
+      </div>
+      <a [routerLink]="getBackLink()" class="btn btn-secondary">← Back</a>
+    </div>
+
+    <div class="detail-layout">
+      <!-- Main Content -->
+      <div class="detail-main">
+        <!-- Ticket Description -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h2 class="card-title">Description</h2>
+          </div>
+          <div class="card-body">
+            <p class="ticket-description">{{ ticket()!.description }}</p>
+          </div>
+        </div>
+
+        <!-- Comments -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Comments ({{ comments().length }})</h2>
+          </div>
+          <div class="card-body">
+            @if (comments().length === 0) {
+              <p class="text-muted text-center" style="padding: 24px 0;">No comments yet. Be the first to comment.</p>
+            } @else {
+              <div class="comments-list">
+                @for (comment of comments(); track comment.id) {
+                  <div class="comment-item">
+                    <div class="comment-avatar">{{ comment.user.fullName.charAt(0) }}</div>
+                    <div class="comment-content">
+                      <div class="comment-header">
+                        <span class="comment-author">{{ comment.user.fullName }}</span>
+                        <span class="comment-role badge" [class]="comment.user.role === 'ADMIN' ? 'badge-urgent' : 'badge-open'">
+                          {{ comment.user.role }}
+                        </span>
+                        <span class="comment-date text-muted text-sm">{{ formatDate(comment.createdAt) }}</span>
+                      </div>
+                      <p class="comment-text">{{ comment.comment }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Add Comment -->
+            @if (ticket()!.status !== 'CLOSED') {
+              <div class="add-comment">
+                <h3 class="add-comment-title">Add a Comment</h3>
+                <textarea
+                  class="form-control"
+                  [(ngModel)]="newComment"
+                  placeholder="Write your comment here..."
+                  rows="3"
+                ></textarea>
+                <div class="comment-actions">
+                  <button
+                    class="btn btn-primary"
+                    (click)="submitComment()"
+                    [disabled]="commentLoading() || !newComment.trim()"
+                  >
+                    @if (commentLoading()) {
+                      <span class="spinner"></span> Posting...
+                    } @else {
+                      Post Comment
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="detail-sidebar">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Ticket Details</h2>
+          </div>
+          <div class="card-body">
+            <div class="detail-item">
+              <span class="detail-label">Status</span>
+              <span [class]="getStatusClass(ticket()!.status)">{{ ticket()!.status | titlecase }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Priority</span>
+              <span [class]="getPriorityClass(ticket()!.priority)">{{ ticket()!.priority }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Category</span>
+              <span>{{ ticket()!.category?.name || 'Uncategorized' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Submitted by</span>
+              <span>{{ ticket()!.student.fullName }}</span>
+            </div>
+            @if (ticket()!.assignedTo) {
+              <div class="detail-item">
+                <span class="detail-label">Assigned to</span>
+                <span>{{ ticket()!.assignedTo!.fullName }}</span>
+              </div>
+            }
+            <div class="detail-item">
+              <span class="detail-label">Created</span>
+              <span class="text-sm">{{ formatDate(ticket()!.createdAt) }}</span>
+            </div>
+            @if (ticket()!.resolvedAt) {
+              <div class="detail-item">
+                <span class="detail-label">Resolved</span>
+                <span class="text-sm">{{ formatDate(ticket()!.resolvedAt!) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

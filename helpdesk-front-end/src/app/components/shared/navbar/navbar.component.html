@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <span class="brand-icon">🎓</span>
+      <span class="brand-name">TUTHelpDesk</span>
+    </div>
+
+    <div class="navbar-links" [class.open]="menuOpen">
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+        <a routerLink="/admin/tickets" routerLinkActive="active" class="nav-link">All Tickets</a>
+        <a routerLink="/admin/users" routerLinkActive="active" class="nav-link">Users</a>
+      } @else {
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+        <a routerLink="/student/tickets" routerLinkActive="active" class="nav-link">My Tickets</a>
+        <a routerLink="/student/tickets/new" routerLinkActive="active" class="nav-link">New Ticket</a>
+      }
+    </div>
+
+    <div class="navbar-user">
+      <div class="user-info">
+        <div class="user-avatar">{{ authService.currentUser()?.fullName?.charAt(0) }}</div>
+        <div class="user-details">
+          <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
+          <span class="user-role">{{ authService.currentUser()?.role }}</span>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="logout()">Logout</button>
+    </div>
+
+    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>

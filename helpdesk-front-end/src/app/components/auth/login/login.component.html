@@ -1,0 +1,71 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">🎓</div>
+      <h1 class="auth-title">TUTHelpDesk</h1>
+      <p class="auth-subtitle">Sign in to your account</p>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          class="form-control"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Enter your username"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block btn-lg"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="spinner"></span> Signing in...
+        } @else {
+          Sign In
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+    </div>
+
+    <div class="demo-credentials">
+      <p class="demo-title">Demo Credentials</p>
+      <div class="demo-row">
+        <span class="demo-role">Admin:</span>
+        <span>admin / admin123</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-role">Student:</span>
+        <span>student1 / student123</span>
+      </div>
+    </div>
+  </div>
+</div>
