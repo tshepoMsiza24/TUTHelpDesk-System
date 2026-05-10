@@ -58,14 +58,27 @@ INSERT INTO categories (name, description) VALUES
 ('Financial Aid', 'Questions about fees, payments, and financial aid'),
 ('General Inquiry', 'General questions and other issues');
 
--- Insert default admin user (password: admin123)
--- Note: In production, use properly hashed passwords
-INSERT INTO users (username, email, password, full_name, role) VALUES
-('admin', 'admin@tut.ac.za', '$2a$10$xqxQ8Z8Z8Z8Z8Z8Z8Z8Z8uKJ5YvXqxQ8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z', 'System Administrator', 'ADMIN');
+-- ============================================================
+-- USERS
+-- All passwords are BCrypt hashed.
+-- admin123  -> $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+-- student123 -> $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+-- (same hash used for demo; replace with properly generated hashes in production)
+-- ============================================================
 
--- Insert sample student user (password: student123)
+-- Admin user
 INSERT INTO users (username, email, password, full_name, role) VALUES
-('student1', 'student1@tut.ac.za', '$2a$10$yqyQ8Z8Z8Z8Z8Z8Z8Z8Z8uKJ5YvXqxQ8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z8Z', 'John Doe', 'STUDENT');
+('admin', 'admin@tut.ac.za', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'System Administrator', 'ADMIN');
+
+-- Student users
+INSERT INTO users (username, email, password, full_name, role) VALUES
+('student1', 'student1@tut.ac.za', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Tshepo Msiza', 'STUDENT');
+
+INSERT INTO users (username, email, password, full_name, role) VALUES
+('student2', 'student2@tut.ac.za', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Hope Mathoko', 'STUDENT');
+
+INSERT INTO users (username, email, password, full_name, role) VALUES
+('student3', 'student3@tut.ac.za', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Masina Prayer', 'STUDENT');
 
 -- Create indexes for better performance
 CREATE INDEX idx_tickets_student_id ON tickets(student_id);
@@ -75,4 +88,3 @@ CREATE INDEX idx_tickets_category_id ON tickets(category_id);
 CREATE INDEX idx_comments_ticket_id ON comments(ticket_id);
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
-

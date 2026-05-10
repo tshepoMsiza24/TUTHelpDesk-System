@@ -1,10 +1,146 @@
 <app-navbar></app-navbar>
 
+<!-- ===== TOAST ===== -->
+@if (toast()) {
+  <div class="toast-wrap">
+    <div class="toast-msg" [class.toast-success]="toast()!.type === 'success'" [class.toast-error]="toast()!.type === 'error'">
+      <span class="toast-msg-icon">{{ toast()!.type === 'success' ? '✓' : '✕' }}</span>
+      <span class="toast-msg-text">{{ toast()!.message }}</span>
+      <button class="toast-msg-close" (click)="dismissToast()">✕</button>
+    </div>
+  </div>
+}
+
+<!-- ===== EDIT MODAL ===== -->
+@if (editModalOpen()) {
+  <div class="modal-backdrop" (click)="closeEdit()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-avatar">{{ selectedUser?.fullName?.charAt(0)?.toUpperCase() }}</div>
+          <div>
+            <h3 class="modal-title">Edit Student</h3>
+            <p class="modal-sub">{{ selectedUser?.username }}</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeEdit()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        @if (editError()) {
+          <div class="modal-alert">⚠️ {{ editError() }}</div>
+        }
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🪪</span>
+              <input type="text" class="form-control form-control-icon"
+                [(ngModel)]="editForm.fullName" placeholder="Full name" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-control form-control-icon"
+                [(ngModel)]="editForm.username" placeholder="Username" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input type="email" class="form-control form-control-icon"
+              [(ngModel)]="editForm.email" placeholder="Email address" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">New Password <span class="optional-tag">optional — leave blank to keep current</span></label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" class="form-control form-control-icon"
+              [(ngModel)]="editForm.password" placeholder="Enter new password (min 6 chars)" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeEdit()" [disabled]="editLoading()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveEdit()" [disabled]="editLoading()">
+          @if (editLoading()) {
+            <span class="spinner"></span> Saving...
+          } @else {
+            💾 Save Changes
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+@if (deleteModalOpen()) {
+  <div class="modal-backdrop" (click)="closeDelete()">
+    <div class="modal-box modal-box-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-avatar modal-avatar-danger">{{ userToDelete?.fullName?.charAt(0)?.toUpperCase() }}</div>
+          <div>
+            <h3 class="modal-title">Delete Student</h3>
+            <p class="modal-sub">This action cannot be undone</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeDelete()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="delete-confirm-body">
+          <div class="delete-warning-icon">🗑️</div>
+          <p class="delete-confirm-text">
+            Are you sure you want to delete <strong>{{ userToDelete?.fullName }}</strong>'s account?
+          </p>
+          <p class="delete-confirm-sub">
+            All their tickets and data will be permanently removed.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDelete()" [disabled]="deleteLoading()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="deleteLoading()">
+          @if (deleteLoading()) {
+            <span class="spinner"></span> Deleting...
+          } @else {
+            🗑️ Yes, Delete
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== PAGE ===== -->
 <div class="page-container">
   <div class="page-header">
     <div>
-      <h1 class="page-title">Users</h1>
-      <p class="page-subtitle">Manage all registered users</p>
+      <h1 class="page-title">👥 User Management</h1>
+      <p class="page-subtitle">View, edit and remove student accounts</p>
+    </div>
+    <div class="header-stats">
+      <div class="header-stat">
+        <span class="header-stat-value">{{ studentCount }}</span>
+        <span class="header-stat-label">Students</span>
+      </div>
+      <div class="header-stat-divider"></div>
+      <div class="header-stat">
+        <span class="header-stat-value">{{ adminCount }}</span>
+        <span class="header-stat-label">Admins</span>
+      </div>
     </div>
   </div>
 
@@ -12,14 +148,14 @@
     <div class="card-body" style="padding: 0;">
       @if (loading()) {
         <div class="loading-state">
-          <span class="spinner"></span>
+          <span class="spinner spinner-dark"></span>
           <span>Loading users...</span>
         </div>
       } @else if (error()) {
-        <div class="alert alert-danger" style="margin: 16px;">{{ error() }}</div>
+        <div class="alert alert-danger" style="margin: 16px;">⚠️ {{ error() }}</div>
       } @else if (users().length === 0) {
         <div class="empty-state">
-          <div class="empty-state-icon">👥</div>
+          <span class="empty-state-icon">👥</span>
           <div class="empty-state-title">No users found</div>
         </div>
       } @else {
@@ -28,11 +164,12 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Full Name</th>
+                <th>Student</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Joined</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -41,25 +178,43 @@
                   <td class="text-muted">{{ user.id }}</td>
                   <td>
                     <div class="user-cell">
-                      <div class="user-avatar">{{ user.fullName.charAt(0) }}</div>
-                      <span class="user-name">{{ user.fullName }}</span>
+                      <div class="user-avatar" [class.user-avatar-admin]="user.role === 'ADMIN'">
+                        {{ user.fullName.charAt(0).toUpperCase() }}
+                      </div>
+                      <div>
+                        <div class="user-name">{{ user.fullName }}</div>
+                      </div>
                     </div>
                   </td>
-                  <td>{{ user.username }}</td>
-                  <td>{{ user.email }}</td>
+                  <td class="text-muted">{{ user.username }}</td>
+                  <td class="text-muted">{{ user.email }}</td>
                   <td>
                     <span class="badge" [class]="user.role === 'ADMIN' ? 'badge-urgent' : 'badge-open'">
-                      {{ user.role }}
+                      {{ user.role === 'ADMIN' ? '🛡️ Admin' : '🎓 Student' }}
                     </span>
                   </td>
                   <td class="text-muted text-sm">{{ formatDate(user.createdAt || '') }}</td>
+                  <td>
+                    @if (user.role === 'STUDENT') {
+                      <div class="action-btns">
+                        <button class="btn btn-edit btn-sm" (click)="openEdit(user)" title="Edit student">
+                          ✏️ Edit
+                        </button>
+                        <button class="btn btn-delete btn-sm" (click)="openDelete(user)" title="Delete student">
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    } @else {
+                      <span class="protected-label">🔒 Protected</span>
+                    }
+                  </td>
                 </tr>
               }
             </tbody>
           </table>
         </div>
         <div class="table-footer">
-          {{ users().length }} users total
+          {{ users().length }} total users &nbsp;·&nbsp; {{ studentCount }} students &nbsp;·&nbsp; {{ adminCount }} admins
         </div>
       }
     </div>

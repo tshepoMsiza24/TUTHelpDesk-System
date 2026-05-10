@@ -1,88 +1,9 @@
-.page-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 16px;
-}
+/* Student dashboard uses global styles from styles.css */
+/* Component-specific overrides only */
 
 .page-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+  color: #003DA5;
   margin-bottom: 4px;
-}
-
-.page-subtitle {
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  border: 1px solid #e5e7eb;
-}
-
-.stat-icon {
-  font-size: 28px;
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.stat-open .stat-value { color: #0694a2; }
-.stat-progress .stat-value { color: #c27803; }
-.stat-resolved .stat-value { color: #0e9f6e; }
-.stat-total .stat-value { color: #1a56db; }
-
-.ticket-title {
-  font-weight: 500;
-  color: #111827;
-}
-
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 48px;
-  color: #6b7280;
-}
-
-@media (max-width: 640px) {
-  .page-header {
-    flex-direction: column;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }

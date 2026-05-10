@@ -1,71 +1,132 @@
 <div class="auth-wrapper">
   <div class="auth-card">
+
+    <!-- Logo -->
     <div class="auth-logo">
-      <div class="logo-icon">🎓</div>
-      <h1 class="auth-title">TUTHelpDesk</h1>
-      <p class="auth-subtitle">Sign in to your account</p>
+      <img src="assets/tut-logo.svg" alt="TUT HelpDesk Logo" class="logo-img" />
+      <h1 class="auth-title">Student Support Portal</h1>
+      <p class="auth-subtitle">Sign in to manage your support tickets</p>
     </div>
 
-    @if (error()) {
-      <div class="alert alert-danger">{{ error() }}</div>
+    <!-- ── LOCKOUT BANNER ── -->
+    @if (lockedOut()) {
+      <div class="lockout-banner">
+        <div class="lockout-icon">🔐</div>
+        <div class="lockout-body">
+          <p class="lockout-title">Account temporarily locked</p>
+          <p class="lockout-sub">Too many failed attempts. Try again in <strong>{{ lockCountdown() }}s</strong></p>
+          <div class="lockout-bar-track">
+            <div class="lockout-bar-fill" [style.width]="progressWidth"></div>
+          </div>
+        </div>
+      </div>
     }
 
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <!-- ── ERROR ── -->
+    @if (error() && !lockedOut()) {
+      <div class="alert alert-danger">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <!-- ── ATTEMPTS WARNING ── -->
+    @if (failedAttempts() > 0 && failedAttempts() < 5 && !lockedOut()) {
+      <div class="attempts-bar">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="attempt-dot" [class.used]="i <= failedAttempts()"></div>
+        }
+        <span class="attempts-label">{{ attemptsLeft }} attempt{{ attemptsLeft === 1 ? '' : 's' }} left</span>
+      </div>
+    }
+
+    <!-- ── FORM ── -->
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" autocomplete="on" novalidate>
+
+      <!-- Student Number -->
       <div class="form-group">
-        <label class="form-label" for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          class="form-control"
-          [(ngModel)]="username"
-          name="username"
-          placeholder="Enter your username"
-          autocomplete="username"
-          required
-        />
+        <label class="form-label" for="username">Student Number</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🎓</span>
+          <input
+            id="username"
+            type="text"
+            class="form-control form-control-icon"
+            [(ngModel)]="username"
+            name="username"
+            placeholder="e.g. 21300123"
+            autocomplete="username"
+            inputmode="numeric"
+            [disabled]="lockedOut()"
+            spellcheck="false"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+          />
+        </div>
       </div>
 
+      <!-- Password -->
       <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          class="form-control"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Enter your password"
-          autocomplete="current-password"
-          required
-        />
+        <div class="label-row">
+          <label class="form-label" for="password">Password</label>
+          <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+        </div>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPwd() ? 'text' : 'password'"
+            class="form-control form-control-icon form-control-icon-right"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            [disabled]="lockedOut()"
+            required
+          />
+          <button type="button" class="pwd-toggle" (click)="togglePwd()" tabindex="-1"
+            [attr.aria-label]="showPwd() ? 'Hide password' : 'Show password'">
+            {{ showPwd() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (capsLock() && password.length > 0) {
+          <div class="caps-warning">⇪ Caps Lock is on</div>
+        }
       </div>
 
+      <!-- Remember me -->
+      <div class="remember-row">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" class="checkbox-input" />
+          <span class="checkbox-custom"></span>
+          Remember my username
+        </label>
+      </div>
+
+      <!-- Submit -->
       <button
         type="submit"
         class="btn btn-primary btn-block btn-lg"
-        [disabled]="loading()"
+        [disabled]="loading() || lockedOut()"
+        style="margin-top: 12px;"
       >
         @if (loading()) {
           <span class="spinner"></span> Signing in...
+        } @else if (lockedOut()) {
+          🔐 Locked — wait {{ lockCountdown() }}s
         } @else {
-          Sign In
+          🔑 Sign In
         }
       </button>
     </form>
 
+    <!-- Footer -->
     <div class="auth-footer">
       <p>Don't have an account? <a routerLink="/register">Register here</a></p>
     </div>
 
-    <div class="demo-credentials">
-      <p class="demo-title">Demo Credentials</p>
-      <div class="demo-row">
-        <span class="demo-role">Admin:</span>
-        <span>admin / admin123</span>
-      </div>
-      <div class="demo-row">
-        <span class="demo-role">Student:</span>
-        <span>student1 / student123</span>
-      </div>
-    </div>
+
+
   </div>
 </div>

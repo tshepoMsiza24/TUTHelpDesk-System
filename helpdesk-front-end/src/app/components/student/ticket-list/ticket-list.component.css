@@ -13,9 +13,9 @@
 }
 
 .page-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+  color: #003DA5;
   margin-bottom: 4px;
 }
 
@@ -47,14 +47,16 @@
 }
 
 .filter-tab:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: #e6edf8;
+  color: #003DA5;
+  border-color: #ccd9f0;
 }
 
 .filter-tab.active {
-  background: #1a56db;
+  background: #003DA5;
   color: white;
-  border-color: #1a56db;
+  border-color: #003DA5;
+  box-shadow: 0 2px 8px rgba(0,61,165,0.25);
 }
 
 .tab-count {

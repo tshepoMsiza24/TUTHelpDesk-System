@@ -42,11 +42,34 @@ public class DataInitializer implements CommandLineRunner {
                     .username("student1")
                     .email("student1@tut.ac.za")
                     .password(passwordEncoder.encode("student123"))
-                    .fullName("John Doe")
+                    .fullName("Tshepo Msiza")
                     .role(User.Role.STUDENT)
                     .build();
             userRepository.save(student);
             System.out.println("✅ Default student created: student1 / student123");
+        }
+        if (!userRepository.existsByUsername("student2")) {
+            User student = User.builder()
+                    .username("student2")
+                    .email("student2@tut.ac.za")
+                    .password(passwordEncoder.encode("student123"))
+                    .fullName("Hope Mathoko")
+                    .role(User.Role.STUDENT)
+                    .build();
+            userRepository.save(student);
+            System.out.println("✅ Default student created: student2 / student123");
+        }
+
+        if (!userRepository.existsByUsername("student3")) {
+            User student = User.builder()
+                    .username("student3")
+                    .email("student3@tut.ac.za")
+                    .password(passwordEncoder.encode("student123"))
+                    .fullName("Masina Prayer")
+                    .role(User.Role.STUDENT)
+                    .build();
+            userRepository.save(student);
+            System.out.println("✅ Default student created: student3 / student123");
         }
 
         // Create default categories if not exist

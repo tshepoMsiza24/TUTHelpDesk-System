@@ -1,7 +1,7 @@
 .navbar {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #001f54 0%, #003DA5 100%);
+  border-bottom: 3px solid #FFB81C;
+  box-shadow: 0 2px 12px rgba(0,61,165,0.3);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -11,7 +11,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 60px;
+  height: 64px;
   display: flex;
   align-items: center;
   gap: 24px;
@@ -20,46 +20,78 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
-.brand-icon {
-  font-size: 22px;
+.brand-logo {
+  height: 38px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.brand-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.25);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
 }
 
 .brand-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a56db;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: #FFB81C;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 }
 
 .nav-link {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
   text-decoration: none;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.2px;
 }
 
 .nav-link:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
 }
 
 .nav-link.active {
-  background: #e8f0fe;
-  color: #1a56db;
+  background: rgba(255,184,28,0.2);
+  color: #FFB81C;
+  border: 1px solid rgba(255,184,28,0.3);
+}
+
+.nav-icon {
+  font-size: 15px;
 }
 
 .navbar-user {
@@ -76,17 +108,18 @@
 }
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #1a56db;
-  color: white;
+  background: linear-gradient(135deg, #FFB81C, #e6a418);
+  color: #001f54;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.3);
 }
 
 .user-details {
@@ -96,48 +129,72 @@
 
 .user-name {
   font-size: 13px;
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+  color: #ffffff;
   line-height: 1.2;
 }
 
 .user-role {
-  font-size: 11px;
-  color: #6b7280;
+  font-size: 10px;
+  color: #FFB81C;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.btn-logout {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-logout:hover {
+  background: rgba(255,255,255,0.2);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.35);
 }
 
 .menu-toggle {
   display: none;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
 }
 
 .menu-toggle span {
   display: block;
   width: 22px;
   height: 2px;
-  background: #374151;
+  background: rgba(255,255,255,0.8);
   border-radius: 2px;
+  transition: all 0.2s;
 }
 
 @media (max-width: 768px) {
   .navbar-links {
     display: none;
     position: absolute;
-    top: 60px;
+    top: 64px;
     left: 0;
     right: 0;
-    background: white;
+    background: #002d7a;
     flex-direction: column;
     padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    border-bottom: 2px solid #FFB81C;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    align-items: stretch;
   }
 
   .navbar-links.open {
@@ -149,6 +206,10 @@
   }
 
   .user-details {
+    display: none;
+  }
+
+  .brand-sub {
     display: none;
   }
 }

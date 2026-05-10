@@ -1,31 +1,49 @@
 <nav class="navbar">
   <div class="navbar-container">
-    <div class="navbar-brand">
-      <span class="brand-icon">🎓</span>
-      <span class="brand-name">TUTHelpDesk</span>
-    </div>
+    <a routerLink="/" class="navbar-brand">
+      <img src="assets/tut-logo.svg" alt="TUT Logo" class="brand-logo" />
+      <div class="brand-divider"></div>
+      <div class="brand-text">
+        <span class="brand-name">TUT HelpDesk</span>
+        <span class="brand-sub">Student Support</span>
+      </div>
+    </a>
 
     <div class="navbar-links" [class.open]="menuOpen">
       @if (authService.isAdmin()) {
-        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
-        <a routerLink="/admin/tickets" routerLinkActive="active" class="nav-link">All Tickets</a>
-        <a routerLink="/admin/users" routerLinkActive="active" class="nav-link">Users</a>
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a routerLink="/admin/tickets" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">🎫</span> All Tickets
+        </a>
+        <a routerLink="/admin/users" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">👥</span> Users
+        </a>
       } @else {
-        <a routerLink="/student/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
-        <a routerLink="/student/tickets" routerLinkActive="active" class="nav-link">My Tickets</a>
-        <a routerLink="/student/tickets/new" routerLinkActive="active" class="nav-link">New Ticket</a>
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+        <a routerLink="/student/tickets" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">🎫</span> My Tickets
+        </a>
+        <a routerLink="/student/tickets/new" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">➕</span> New Ticket
+        </a>
       }
     </div>
 
     <div class="navbar-user">
       <div class="user-info">
-        <div class="user-avatar">{{ authService.currentUser()?.fullName?.charAt(0) }}</div>
+        <div class="user-avatar">{{ authService.currentUser()?.fullName?.charAt(0)?.toUpperCase() }}</div>
         <div class="user-details">
           <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
           <span class="user-role">{{ authService.currentUser()?.role }}</span>
         </div>
       </div>
-      <button class="btn btn-secondary btn-sm" (click)="logout()">Logout</button>
+      <button class="btn-logout" (click)="logout()">
+        🚪 Logout
+      </button>
     </div>
 
     <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">

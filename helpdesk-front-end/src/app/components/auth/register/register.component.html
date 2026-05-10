@@ -1,80 +1,186 @@
 <div class="auth-wrapper">
-  <div class="auth-card">
+
+  <!-- ===== SUCCESS TOAST ===== -->
+  @if (registered()) {
+    <div class="toast-overlay">
+      <div class="toast-popup">
+        <div class="toast-icon-wrap">
+          <span class="toast-check">✓</span>
+        </div>
+        <div class="toast-body">
+          <p class="toast-title">Account Created Successfully!</p>
+          <p class="toast-sub">Welcome, <strong>{{ registeredName() }}</strong>. Redirecting to login in <span class="toast-count">{{ countdown() }}s</span></p>
+          <div class="toast-progress">
+            <div class="toast-progress-bar"></div>
+          </div>
+        </div>
+        <button class="toast-close" (click)="goToLogin()" aria-label="Close">✕</button>
+      </div>
+    </div>
+  }
+
+  <!-- ===== REGISTER CARD ===== -->
+  <div class="auth-card" [class.blurred]="registered()">
+
     <div class="auth-logo">
-      <div class="logo-icon">🎓</div>
-      <h1 class="auth-title">TUTHelpDesk</h1>
-      <p class="auth-subtitle">Create your student account</p>
+      <img src="assets/tut-logo.svg" alt="TUT HelpDesk Logo" class="logo-img" />
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-subtitle">Register as a TUT student</p>
     </div>
 
     @if (error()) {
-      <div class="alert alert-danger">{{ error() }}</div>
+      <div class="alert alert-danger">
+        <span>⚠️</span> {{ error() }}
+      </div>
     }
 
-    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm" novalidate autocomplete="off">
+
+      <!-- Full Name -->
       <div class="form-group">
         <label class="form-label" for="fullName">Full Name</label>
-        <input
-          id="fullName"
-          type="text"
-          class="form-control"
-          [(ngModel)]="fullName"
-          name="fullName"
-          placeholder="Enter your full name"
-          required
-        />
+        <div class="input-wrapper">
+          <span class="input-icon">🪪</span>
+          <input id="fullName" type="text"
+            class="form-control form-control-icon"
+            [(ngModel)]="fullName" name="fullName"
+            placeholder="First name Last name"
+            autocomplete="name" required />
+        </div>
       </div>
 
+      <!-- Student Number -->
       <div class="form-group">
-        <label class="form-label" for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          class="form-control"
-          [(ngModel)]="username"
-          name="username"
-          placeholder="Choose a username"
-          autocomplete="username"
-          required
-        />
+        <label class="form-label" for="username">Student Number</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🎓</span>
+          <input id="username" type="text"
+            class="form-control form-control-icon"
+            [class.input-error]="usernameError()"
+            [class.input-ok]="username.length === 8 && !usernameError()"
+            [(ngModel)]="username" name="username"
+            placeholder="e.g. 21300123"
+            autocomplete="username"
+            maxlength="8"
+            inputmode="numeric"
+            (input)="validateUsername()"
+            spellcheck="false" autocorrect="off" autocapitalize="off"
+            required />
+          @if (username.length === 8 && !usernameError()) {
+            <span class="field-ok-icon">✓</span>
+          }
+        </div>
+        @if (usernameError()) {
+          <p class="field-error">⚠ {{ usernameError() }}</p>
+        }
+        @if (!usernameError() && username.length > 0 && username.length < 8) {
+          <p class="field-hint">{{ 8 - username.length }} digit{{ 8 - username.length === 1 ? '' : 's' }} remaining</p>
+        }
       </div>
 
+      <!-- Email -->
       <div class="form-group">
         <label class="form-label" for="email">Email Address</label>
-        <input
-          id="email"
-          type="email"
-          class="form-control"
-          [(ngModel)]="email"
-          name="email"
-          placeholder="Enter your email"
-          autocomplete="email"
-          required
-        />
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input id="email" type="email"
+            class="form-control form-control-icon"
+            [class.input-error]="emailError()"
+            [class.input-ok]="email.length > 0 && !emailError()"
+            [(ngModel)]="email" name="email"
+            placeholder="yourname&#64;tut.ac.za"
+            autocomplete="email"
+            (input)="validateEmail()"
+            required />
+          @if (email.length > 0 && !emailError()) {
+            <span class="field-ok-icon">✓</span>
+          }
+        </div>
+        @if (emailError()) {
+          <p class="field-error">⚠ {{ emailError() }}</p>
+        }
       </div>
 
+      <!-- Password -->
       <div class="form-group">
         <label class="form-label" for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          class="form-control"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Create a password (min 6 characters)"
-          autocomplete="new-password"
-          required
-        />
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input id="password"
+            [type]="showPwd() ? 'text' : 'password'"
+            class="form-control form-control-icon form-control-icon-right"
+            [(ngModel)]="password" name="password"
+            placeholder="Minimum 6 characters"
+            autocomplete="new-password"
+            required />
+          <button type="button" class="pwd-toggle" (click)="togglePwd()" tabindex="-1"
+            [attr.aria-label]="showPwd() ? 'Hide password' : 'Show password'">
+            {{ showPwd() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+
+        <!-- Strength meter -->
+        @if (password.length > 0) {
+          <div class="strength-wrap">
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill"
+                [style.width]="strength.width"
+                [style.background]="strength.color">
+              </div>
+            </div>
+            <span class="strength-label" [style.color]="strength.color">
+              {{ strength.label }}
+            </span>
+          </div>
+
+          <!-- Checklist -->
+          <ul class="strength-checks">
+            @for (check of strength.checks; track check.label) {
+              <li [class.check-pass]="check.passed" [class.check-fail]="!check.passed">
+                {{ check.passed ? '✓' : '✗' }} {{ check.label }}
+              </li>
+            }
+          </ul>
+        }
       </div>
 
-      <button
-        type="submit"
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label class="form-label" for="confirmPwd">Confirm Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input id="confirmPwd"
+            [type]="showConfirmPwd() ? 'text' : 'password'"
+            class="form-control form-control-icon form-control-icon-right"
+            [class.input-error]="confirmError()"
+            [class.input-ok]="passwordsMatch"
+            [(ngModel)]="confirmPwd" name="confirmPwd"
+            placeholder="Re-enter your password"
+            autocomplete="new-password"
+            (input)="validateConfirm()"
+            required />
+          <button type="button" class="pwd-toggle" (click)="toggleConfirmPwd()" tabindex="-1"
+            [attr.aria-label]="showConfirmPwd() ? 'Hide password' : 'Show password'">
+            {{ showConfirmPwd() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (confirmError()) {
+          <p class="field-error">⚠ {{ confirmError() }}</p>
+        }
+        @if (passwordsMatch) {
+          <p class="field-ok-text">✓ Passwords match</p>
+        }
+      </div>
+
+      <!-- Submit -->
+      <button type="submit"
         class="btn btn-primary btn-block btn-lg"
-        [disabled]="loading()"
-      >
+        [disabled]="loading() || registered()"
+        style="margin-top: 8px;">
         @if (loading()) {
           <span class="spinner"></span> Creating account...
         } @else {
-          Create Account
+          🎓 Create Account
         }
       </button>
     </form>
@@ -83,4 +189,5 @@
       <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
     </div>
   </div>
+
 </div>

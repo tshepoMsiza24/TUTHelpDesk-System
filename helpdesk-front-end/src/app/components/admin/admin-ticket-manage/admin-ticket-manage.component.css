@@ -22,18 +22,19 @@
 }
 
 .breadcrumb a {
-  color: #1a56db;
+  color: #003DA5;
   text-decoration: none;
 }
 
 .breadcrumb a:hover {
   text-decoration: underline;
+  color: #FFB81C;
 }
 
 .page-title {
   font-size: 22px;
-  font-weight: 700;
-  color: #111827;
+  font-weight: 800;
+  color: #003DA5;
 }
 
 .header-badges {
@@ -74,7 +75,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #1a56db;
+  background: linear-gradient(135deg, #003DA5, #002d7a);
   color: white;
   display: flex;
   align-items: center;
